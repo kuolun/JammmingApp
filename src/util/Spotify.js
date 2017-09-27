@@ -1,10 +1,11 @@
 let ACCESS_TOKEN;
 const CLIENT_ID = "d5d4f49c39b64fc094310e432f55a62d";
-const REDIRECT_URI = "http://localhost:3000";
+const REDIRECT_URI = "http://localhost:3000/";
 let expiresIn;
 
 let Spotify = {
   getAccessToken: function() {
+    console.log(ACCESS_TOKEN);
     if (ACCESS_TOKEN) {
       return ACCESS_TOKEN;
     } else {
@@ -16,21 +17,21 @@ let Spotify = {
         expiresIn = arr[0].split("=")[1];
         // handle expire
         window.setTimeout(() => (ACCESS_TOKEN = ""), expiresIn * 1000);
+        console.log(expiresIn);
+        console.log(ACCESS_TOKEN);
         //clear url parameter
         window.history.pushState("Access Token", null, "/");
+        return ACCESS_TOKEN;
       } else {
         // access token empty and not in URL, redirect to API
-        window.location = `https://accounts.spotify.com/authorize?
-          client_id=CLIENT_ID&
-          response_type=token&
-          scope=playlist-modify-public&
-          redirect_uri=REDIRECT_URI`;
+        window.location = `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&response_type=token&scope=playlist-modify-public&redirect_uri=${REDIRECT_URI}`;
       }
     }
   },
   search: function(term) {
-    return fetch("https://api.spotify.com/v1/search?type=track&q=term", {
-      headers: { Authorization: `Bearer ${accessToken}` }
+    ACCESS_TOKEN = this.getAccessToken();
+    return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
+      headers: { Authorization: `Bearer ${ACCESS_TOKEN}` }
     })
       .then(
         response => {
@@ -42,7 +43,7 @@ let Spotify = {
         netWorkError => console.log(netWorkError.message)
       )
       .then(jsonResponse => {
-        jsonResponse.map(track => {
+        return jsonResponse.tracks.items.map(track => {
           return {
             id: track.id,
             name: track.name,

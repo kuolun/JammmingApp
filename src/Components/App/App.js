@@ -47,7 +47,12 @@ class App extends Component {
     let trackURIs = [];
   }
   search(term) {
-    Spotify.search(term);
+    Spotify.search(term).then(results => {
+      console.log(results);
+      this.setState(() => ({
+        searchResults: results
+      }));
+    });
   }
   render() {
     return (
