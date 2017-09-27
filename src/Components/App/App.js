@@ -3,6 +3,7 @@ import "./App.css";
 import SearchBar from "../SearchBar/SearchBar";
 import SearchResults from "../SearchResults/SearchResults";
 import PlayList from "../PlayList/PlayList";
+import Spotify from "../../util/Spotify";
 
 class App extends Component {
   constructor(props) {
@@ -46,7 +47,7 @@ class App extends Component {
     let trackURIs = [];
   }
   search(term) {
-    console.log(term);
+    Spotify.search(term);
   }
   render() {
     return (
